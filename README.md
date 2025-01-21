@@ -14,3 +14,21 @@ The following blog posts share lessons learned from our engagements, work perfor
 - [Centrigue - Part 2](https://getrecon.substack.com/p/lessons-learned-from-fuzzing-centrifuge-059?r=34r2zr)
 - [eBTC](https://getrecon.substack.com/p/ebtc-retrospective?r=34r2zr)
 - [Corn](https://getrecon.substack.com/p/corn-engagement-retrospective?r=34r2zr)
+
+
+# Engagements
+
+## Invariant Testing
+
+| Date | Name | Link |
+|------|------|------|
+|  July 2024  | Apollon |  https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md |
+| Oct 2024 | Balancer DAO | https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md |
+| Nov 2024 | Liquity | Private |
+| Dec 2024 | Credit Coop | Private | 
+| Jan 2024 | Beraborrow | Private | 
+| Jan 2024 | Corn Invariant Testing | Private |
+
+
+## Audits
+
