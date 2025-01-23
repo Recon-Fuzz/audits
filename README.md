@@ -1,8 +1,5 @@
 # Recon Audits
 
-## Audit Reports
-- [Kleidi](https://github.com/Recon-Fuzz/audits/blob/main/Kleidi_Report.md)
-
 ## Retrospectives
 The following blog posts share lessons learned from our engagements, work performed and vulnerabilities we discovered using fuzzing to perform invariant testing.
 
@@ -18,11 +15,12 @@ The following blog posts share lessons learned from our engagements, work perfor
 
 | Date | Name | Link |
 |------|------|------|
+| Oct 2023 | Badger (eBTC) | N/A |
 | Nov 2024 | Liquity | Private |
 | Dec 2024 | Credit Coop | Private | 
 | Jan 2024 | Beraborrow | Private | 
-| Jan 2024 | Centrifuge Invariant Testing | Coming Soon |
-| Jan 2024 | Corn Invariant Testing | Private |
+| Jan 2024 | Centrifuge | Coming Soon |
+| Jan 2024 | Corn | Private |
 
 
 ## Audits
@@ -33,3 +31,4 @@ The following contain audit reports for engagements performed by members of the 
 |------|------|------|
 |  July 2024  | Apollon |  https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md |
 | Oct 2024 | Balancer DAO | https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md |
+| Oct 2024 | Kleidi | https://github.com/Recon-Fuzz/audits/blob/main/Kleidi_Report.md |
