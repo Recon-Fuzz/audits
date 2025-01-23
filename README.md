@@ -1,10 +1,6 @@
 # Recon Audits
 
 ## Audit Reports
-The following contain audit reports for engagements performed by members of the recon team.
-
-- [Apollon](https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md)
-- [Balancer](https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md)
 - [Kleidi](https://github.com/Recon-Fuzz/audits/blob/main/Kleidi_Report.md)
 
 ## Retrospectives
@@ -22,13 +18,18 @@ The following blog posts share lessons learned from our engagements, work perfor
 
 | Date | Name | Link |
 |------|------|------|
-|  July 2024  | Apollon |  https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md |
-| Oct 2024 | Balancer DAO | https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md |
 | Nov 2024 | Liquity | Private |
 | Dec 2024 | Credit Coop | Private | 
 | Jan 2024 | Beraborrow | Private | 
+| Jan 2024 | Centrifuge Invariant Testing | Coming Soon |
 | Jan 2024 | Corn Invariant Testing | Private |
 
 
 ## Audits
 
+The following contain audit reports for engagements performed by members of the recon team.
+
+| Date | Name | Link |
+|------|------|------|
+|  July 2024  | Apollon |  https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md |
+| Oct 2024 | Balancer DAO | https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md |
