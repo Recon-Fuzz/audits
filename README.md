@@ -34,7 +34,7 @@ The following contain audit reports for engagements performed by members of the 
 |------|------|------|
 | Jan 2024 | Quill | private |
 |  Jul 2024  | Apollon |  [link](https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md) |
-| Sep 2024 | Liquity | private |
+| Sep 2024 | Liquity | [link](https://github.com/GalloDaSballo/bold-review) |
 | Oct 2024 | Balancer DAO | [link](https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md) |
 | Oct 2024 | Kleidi | [link](https://github.com/Recon-Fuzz/audits/blob/main/Kleidi_Report.md) |
 | Dec 2024 | Credit Coop | private |
