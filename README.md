@@ -32,7 +32,8 @@ The following contain audit reports for engagements performed by members of the 
 
 | Date | Name | Link |
 |------|------|------|
-| Jan 2024 | Quill | private |
+| April 2024 | Centrifuge V3 | [link](https://github.com/Recon-Fuzz/audits/blob/main/Centrifuge_Protocol_V3.MD) |
+| Jan 2024 | Quill | [link](https://github.com/Recon-Fuzz/audits/blob/main/Quill_Finance_Report.md) |
 |  Jul 2024  | Apollon |  [link](https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md) |
 | Sep 2024 | Liquity | [link](https://github.com/GalloDaSballo/bold-review) |
 | Oct 2024 | Balancer DAO | [link](https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md) |
