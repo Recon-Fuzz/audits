@@ -15,7 +15,6 @@ The following blog posts share lessons learned from our engagements, work perfor
 
 | Date | Name | Link |
 |------|------|------|
-
 | Mar - May 2025 | Centrifuge V3 | Private | [link](https://github.com/centrifuge/protocol-v3/tree/feat/recon-invariants/test/integration/recon-end-to-end)
 | April 2025 | Beraborrow | Private |
 | Mar 2025 | eBTC BSM | [link](https://github.com/ebtc-protocol/ebtc-bsm/tree/main/test/recon-core) |
