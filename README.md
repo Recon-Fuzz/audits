@@ -15,16 +15,18 @@ The following blog posts share lessons learned from our engagements, work perfor
 
 | Date | Name | Link |
 |------|------|------|
-| Oct 2023 | Badger (eBTC) | N/A |
-| Jan 2024 | Beraborrow | Private | 
-| Jan 2024 | Corn | Private |
-| Aug 2024 | Centrifuge Aggregator | [link](https://github.com/centrifuge/liquidity-pools/tree/main/test/recon-aggregator) |
-| Sep 2024 | Centrifuge Core | [link](https://github.com/centrifuge/liquidity-pools/tree/main/test/recon-core) |
-| Nov 2024 | Liquity Bold | Private |
-| Nov 2024 | Liquity Governance V2 | [link](https://github.com/liquity/V2-gov/tree/main/test/recon) |
+
+| Mar - May 2025 | Centrifuge V3 | Private | [link](https://github.com/centrifuge/protocol-v3/tree/feat/recon-invariants/test/integration/recon-end-to-end)
+| April 2025 | Beraborrow | Private |
+| Mar 2025 | eBTC BSM | [link](https://github.com/ebtc-protocol/ebtc-bsm/tree/main/test/recon-core) |
+| Jan 2025 | Corn | Private |
+| Jan - Feb 2025 | Beraborrow | Private | 
 | Dec 2024 | Credit Coop | Private | 
-| Feb 2025 | Nerite | [link](https://github.com/Recon-Fuzz/nerite/tree/invariant-testing/contracts/test/recon) | 
-| Mar 2025 | eBTC BSM | [link](https://github.com/ebtc-protocol/ebtc-bsm/tree/main/test/recon-core) | 
+| Nov 2024 | Liquity Governance V2 | [link](https://github.com/liquity/V2-gov/tree/main/test/recon) |
+| Nov 2024 | Liquity Bold | Private |
+| Sep 2024 | Centrifuge Core | [link](https://github.com/centrifuge/liquidity-pools/tree/main/test/recon-core) |
+| Aug 2024 | Centrifuge Aggregator | [link](https://github.com/centrifuge/liquidity-pools/tree/main/test/recon-aggregator) |
+| Oct 2023 | Badger (eBTC) | [link](https://github.com/ebtc-protocol/ebtc/pull/811) |
 
 ## Audits
 
@@ -32,10 +34,12 @@ The following contain audit reports for engagements performed by members of the 
 
 | Date | Name | Link |
 |------|------|------|
-| April 2024 | Centrifuge V3 | [link](https://github.com/Recon-Fuzz/audits/blob/main/Centrifuge_Protocol_V3.MD) |
-| Jan 2024 | Quill | [link](https://github.com/Recon-Fuzz/audits/blob/main/Quill_Finance_Report.md) |
-|  Jul 2024  | Apollon |  [link](https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md) |
-| Sep 2024 | Liquity | [link](https://github.com/GalloDaSballo/bold-review) |
-| Oct 2024 | Balancer DAO | [link](https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md) |
-| Oct 2024 | Kleidi | [link](https://github.com/Recon-Fuzz/audits/blob/main/Kleidi_Report.md) |
+| April 2025 | Centrifuge V3 | [link](https://github.com/Recon-Fuzz/audits/blob/main/Centrifuge_Protocol_V3.MD) |
+| March 2025 | Orki | [link](https://github.com/Recon-Fuzz/audits/blob/main/Orki_audit.MD) |
+| Jan 205 | Quill | [link](https://github.com/Recon-Fuzz/audits/blob/main/Quill_Finance_Report.md) |
 | Dec 2024 | Credit Coop | private |
+| Oct 2024 | Kleidi | [link](https://github.com/Recon-Fuzz/audits/blob/main/Kleidi_Report.md) |
+| Oct 2024 | Balancer DAO | [link](https://github.com/Recon-Fuzz/audits/blob/main/Balancer_Report.md) |
+| Sep 2024 | Liquity | [link](https://github.com/GalloDaSballo/bold-review) |
+| Jul 2024 | Apollon |  [link](https://github.com/Recon-Fuzz/audits/blob/main/Apollon_Report.md) |
+
