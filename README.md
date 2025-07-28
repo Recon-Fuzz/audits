@@ -15,7 +15,7 @@ The following blog posts share lessons learned from our engagements, work perfor
 
 | Date | Name | Link |
 |------|------|------|
-| Jun 2025 | Cap [link](https://github.com/Recon-Fuzz/cap-invariants)
+| Jun 2025 | Cap | [link](https://github.com/Recon-Fuzz/cap-invariants)
 | Mar - May 2025 | Centrifuge V3 | [link](https://github.com/centrifuge/protocol-v3/tree/feat/recon-invariants/test/integration/recon-end-to-end)
 | April 2025 | Beraborrow | Private |
 | Mar 2025 | eBTC BSM | [link](https://github.com/ebtc-protocol/ebtc-bsm/tree/main/test/recon-core) |
