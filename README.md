@@ -34,6 +34,7 @@ The following contain audit reports for engagements performed by members of the 
 
 | Date | Name | Link |
 |------|------|------|
+| July 2025 | Spine Finance | [link](https://github.com/Recon-Fuzz/audits/blob/main/Spine_Finance_Review.MD) |
 | April 2025 | Centrifuge V3 | [link](https://github.com/Recon-Fuzz/audits/blob/main/Centrifuge_Protocol_V3.MD) |
 | March 2025 | Orki | [link](https://github.com/Recon-Fuzz/audits/blob/main/Orki_audit.MD) |
 | Jan 205 | Quill | [link](https://github.com/Recon-Fuzz/audits/blob/main/Quill_Finance_Report.md) |
