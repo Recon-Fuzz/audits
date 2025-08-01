@@ -65,36 +65,38 @@ Recon offers:
 - **QA**
   - [Q-01 Interest rate arbitrage was possible when `handleCashOut` was causing a loss to the system and not the caller](#q-01)
   - [Q-02 `closeLeverageBorrowingStrategyEarly` is approving an incorrect amount of tokens](#q-02)
-  - [Q-03 `PendleOnSpineStrategy` risky patterns that can be fixed](#q-03)
-  - [Q-04 `onOpenBorrowingPosition` could use a offchain computed hint for efficiency](#q-04)
-  - [Q-05 Gas & QA spine-pendle-strategies](#q-05)
-  - [Q-06 `removeCollateralToken` doesn't clear allowances](#q-06)
-  - [Q-07 Bond data can be deleted before all bonds have been redeemed](#q-07)
-  - [Q-08 Informational: You can open a borrowing position on zero lent due to first liquidity provider](#q-08)
-  - [Q-09 Inaccurate `lpDepositAmount` causes `equityRiskRatio` math to underestimate the available liquidity](#q-09)
-  - [Q-10 Precision loss of y/X when y is very small could be used to break the invariant and reprice bonds](#q-10)
-  - [Q-11 UX Improvement - Make it easier to fetch deployment info](#q-11)
-  - [Q-12 `poolData.vault` is provided but never used](#q-12)
-  - [Q-13 `RESTAKING_POOL_TYPE.NONE` is not supported](#q-13)
-  - [Q-14 `lltv` is validated only when first adding a collateral](#q-14)
-  - [Q-15 TODO: AMM Fees should be rounded up as they are consistently undercharged](#q-15)
-  - [Q-16 Euler deposits can be forced to revert to ensure that they do not earn yield](#q-16)
-  - [Q-17 CEI Breaking Code](#q-17)
-  - [Q-18 Off by one error in `handlePaymentForSingleMaturity`](#q-18)
-  - [Q-19 `LoanCalculator` should use feeds with 8 decimals](#q-19)
-  - [Q-20 Discrepancy between view functions and actual swap functions](#q-20)
-  - [Q-21 `addMaturity` allows adding maturities in the past](#q-21)
-  - [Q-22 Gotcha: Collateral Withdrawal can be Blocked by Cross-Collateral Solvency Check](#q-22)
-  - [Q-23 Early return true on 0 borrows](#q-23)
-  - [Q-24 No Event on Liquidation](#q-24)
-  - [Q-25 Wrong event params on `LiquidityAdded`](#q-25)
+  - [Q-03 `_pool.tokenAddress` should never be a token that can rebase (vaults)](#q-03)
+  - [Q-04 `PendleOnSpineStrategy` risky patterns that can be fixed](#q-04)
+  - [Q-05 `onOpenBorrowingPosition` could use a offchain computed hint for efficiency](#q-05)
+  - [Q-06 Gas & QA spine-pendle-strategies](#q-06)
+  - [Q-07 `removeCollateralToken` doesn't clear allowances](#q-07)
+  - [Q-08 Bond data can be deleted before all bonds have been redeemed](#q-08)
+  - [Q-09 Informational: You can open a borrowing position on zero lent due to first liquidity provider](#q-09)
+  - [Q-10 Inaccurate `lpDepositAmount` causes `equityRiskRatio` math to underestimate the available liquidity](#q-10)
+  - [Q-11 Precision loss of y/X when y is very small could be used to break the invariant and reprice bonds](#q-11)
+  - [Q-12 UX Improvement - Make it easier to fetch deployment info](#q-12)
+  - [Q-13 `poolData.vault` is provided but never used](#q-13)
+  - [Q-14 `RESTAKING_POOL_TYPE.NONE` is not supported](#q-14)
+  - [Q-15 `lltv` is validated only when first adding a collateral](#q-15)
+  - [Q-16 AMM Fees should be rounded up as they are consistently undercharged](#q-16)
+  - [Q-17 Euler deposits can be forced to revert to ensure that they do not earn yield](#q-17)
+  - [Q-18 CEI Breaking Code](#q-18)
+  - [Q-19 Off by one error in `handlePaymentForSingleMaturity`](#q-19)
+  - [Q-20 `LoanCalculator` should use feeds with 8 decimals](#q-20)
+  - [Q-21 Discrepancy between view functions and actual swap functions](#q-21)
+  - [Q-22 `addMaturity` allows adding maturities in the past](#q-22)
+  - [Q-23 Gotcha: Collateral Withdrawal can be Blocked by Cross-Collateral Solvency Check](#q-23)
+  - [Q-24 Early return true on 0 borrows](#q-24)
+  - [Q-25 No Event on Liquidation](#q-25)
+  - [Q-26 Wrong event params on `LiquidityAdded`](#q-26)
 - **Analysis**
   - [A-01 Suggested Next Steps](#a-01)
   - [A-02 Governance Mistake / PK Leak Risks](#a-02)
 - **Economic**
   - [E-01 LTV vs LLTV needs to be conscious of compounded Oracle Drift](#e-01)
 - **Invariants**
-  - [I-01 Invariant Testing](#i-01)
+  - [I-01 Additional Properties](#i-01)
+  - [I-02 Invariant Testing](#i-02)
 
 
 <a name="h-01" id="h-01"></a>
@@ -279,7 +281,45 @@ This achieves 2 goals:
 <a name="h-03" id="h-03"></a>
 # H-03 Pendle on Spine Strategy Callbacks trigger the `nonReentrant` guard and revert
 
-null
+## Impact
+
+All functions in `RestakingRouter` are `nonReentrant` 
+`closeLeverageBorrowingStrategyEarly` and `repayLeverageStrategy` will call their respective function in the router, then receive a callback.
+
+
+These callbacks are called in this `nonReentrant` state and call `withdrawCollateral` which is also protected by the `nonReentrant` guard
+
+```solidity
+       // withdraw collateral
+        IRestakingRouter(spineRouter).withdrawCollateral(
+            _account,
+            _collateralToken,
+            _poolAddress,
+            ptBalance
+        );
+```
+
+https://github.com/spine-finance/resupplied-sm/blob/d9357ad5f706bfa1ec246009bca7f13512dcbce4/contracts/RestakingRouter.sol#L318-L328
+
+```solidity
+    function withdrawCollateral(
+        address _account,
+        address _collateralToken,
+        address _poolAddress,
+        uint256 _amount
+    )
+        external
+        nonReentrant
+        checkPermission(_account)
+        CollateralLTVProtected(_account, _poolAddress, _collateralToken)
+    {
+```
+
+This will cause them to revert
+
+## Mitigation
+
+Rewrite the code in the router to be CEI compliant, as to make `withdrawCollateral` not need the reentrancy guards.
 
 <a name="m-01" id="m-01"></a>
 # M-01 `closeLeverageBorrowingStrategyEarly` slippage check is insufficient
@@ -925,7 +965,82 @@ Hardcodes `_bondAmount` when in reality the user should pay less
 It's probably fine to leave the code as is, however you should comment that the amount is incorrect
 
 <a name="q-03" id="q-03"></a>
-# Q-03 `PendleOnSpineStrategy` risky patterns that can be fixed
+# Q-03 `_pool.tokenAddress` should never be a token that can rebase (vaults)
+
+## Impact 
+
+`closeBorrowingPositionEarly` is forced to defer the call to `_handleCashIn(_poolAddress, tokenAmountIn);`
+
+https://github.com/GalloDaSballo/spine-invariants/blob/1d7b25237788606cafcdddc1154ab0e18ecb19c2/src/RestakingRouter.sol#L311-L351
+
+```solidity
+function closeBorrowingPositionEarly(
+        address _account,
+        address _poolAddress,
+        address _collateralToken,
+        uint256 _bondAmount,
+        uint256 _maxTokenAmountIn,
+        uint256 _maturity,
+        bytes memory _callbackData
+    )
+        external
+        nonReentrant
+        checkPermission(_account)
+        syncReward(_poolAddress)
+        checkValidAmountPerAction(_poolAddress, _bondAmount)
+        returns (uint256 tokenAmountIn, bytes memory callbackRes)
+    {
+        require(_bondAmount > 0, "invalid amount");
+
+        // swap cash to bond
+        PoolData memory poolData = pools[_poolAddress];
+        require(poolData.created, "Pool must be created");
+        tokenAmountIn = IRestakingBondMM(_poolAddress).swapQuoteTokenForExactBond(_bondAmount, _maturity, ACTION.CB);
+        require(tokenAmountIn <= _maxTokenAmountIn, "Exceed max token amount");
+
+        bytes32 userBorrowedKey = LoanCalculator.getBorrowedKey(_account, _poolAddress, _collateralToken, _maturity);
+
+        userBorrowed[userBorrowedKey] -= _bondAmount;
+
+        if (_callbackData.length > 0) {
+            callbackRes = IStrategies(msg.sender).onCloseBorrowingPositionEarly(
+                _account, _poolAddress, _collateralToken, _bondAmount, _maturity, _callbackData, tokenAmountIn
+            );
+        }
+        _handleCashIn(_poolAddress, tokenAmountIn);
+
+        require(
+            userBorrowed[userBorrowedKey] > poolData.minAmountPerAction || userBorrowed[userBorrowedKey] == 0,
+            "Invalid remaining bond amount"
+        );
+        emit BorrowingPositionClosedEarly(_account, _poolAddress, _maturity, tokenAmountIn, _bondAmount);
+    }
+```
+
+This allows a pattern in which a user can withdraw their collateral and use it to repay the debt
+
+I was unable to weaponize this with the current config
+
+However, it's worth noting that the safety of the system relies on the fact that the cached `tokenAmountIn`'s value is expected not to change
+
+Therefore, using a `_pool.tokenAddress` that is itself a vault (e.g. staked USD*) could result in a loss of value to the system
+
+## POC
+
+- sUSDX is the Collateral and the system + the user own all of the supply
+- The share value is 1.3e18
+- The user `closeBorrowingPositionEarly`
+- They now have 100% of the sUSDX total supply
+- They withdraw from the vault and burn all supply
+- This resets the Price Per Share back to 1e18
+- The check will then transfer back the same amount
+- Because the vault price has changed, the amount is no longer worth the same
+
+Note that this also requires the oracle being used to not reprice
+Which may be irealistic
+
+<a name="q-04" id="q-04"></a>
+# Q-04 `PendleOnSpineStrategy` risky patterns that can be fixed
 
 ## Make `openBorrowingPosition` CEI Conformant and safer
 
@@ -955,8 +1070,8 @@ To happen before the token transfer and the callback
 
 Since the `PendleOnSpineStrategy` will deposit coll (which has no solvency check), you can already add the debit to the account, which makes the code more consistent
 
-<a name="q-04" id="q-04"></a>
-# Q-04 `onOpenBorrowingPosition` could use a offchain computed hint for efficiency
+<a name="q-05" id="q-05"></a>
+# Q-05 `onOpenBorrowingPosition` could use a offchain computed hint for efficiency
 
 ## Impact
 
@@ -980,8 +1095,8 @@ You can customize the approxParams: https://docs.pendle.finance/Developers/Contr
 
 Which should save gas in the best case and have no impact in the worst case
 
-<a name="q-05" id="q-05"></a>
-# Q-05 Gas & QA spine-pendle-strategies
+<a name="q-06" id="q-06"></a>
+# Q-06 Gas & QA spine-pendle-strategies
 
 Make immutable
 
@@ -1000,8 +1115,8 @@ https://github.com/spine-finance/spine-pendle-strategies/blob/a97f465878e61bd33a
 using SafeERC20 for IERC20;
 ```
 
-<a name="q-06" id="q-06"></a>
-# Q-06 `removeCollateralToken` doesn't clear allowances
+<a name="q-07" id="q-07"></a>
+# Q-07 `removeCollateralToken` doesn't clear allowances
 
 ## Impact
 
@@ -1049,8 +1164,8 @@ function removeCollateralToken(
     }
 ```
 
-<a name="q-07" id="q-07"></a>
-# Q-07 Bond data can be deleted before all bonds have been redeemed
+<a name="q-08" id="q-08"></a>
+# Q-08 Bond data can be deleted before all bonds have been redeemed
 
 ## Impact
 
@@ -1090,8 +1205,8 @@ Alternatively you could prevent maturities from being deleted when their total s
 
 Given the fact that you have a max maturity this seems like an acceptable tradeoff.
 
-<a name="q-08" id="q-08"></a>
-# Q-08 Informational: You can open a borrowing position on zero lent due to first liquidity provider
+<a name="q-09" id="q-09"></a>
+# Q-09 Informational: You can open a borrowing position on zero lent due to first liquidity provider
 
 ## Impact
 
@@ -1123,8 +1238,8 @@ function test_property_borrow_lent_soundness_1() public {
 }
 ```
 
-<a name="q-09" id="q-09"></a>
-# Q-09 Inaccurate `lpDepositAmount` causes `equityRiskRatio` math to underestimate the available liquidity
+<a name="q-10" id="q-10"></a>
+# Q-10 Inaccurate `lpDepositAmount` causes `equityRiskRatio` math to underestimate the available liquidity
 
 ## Impact
 
@@ -1178,8 +1293,8 @@ From a risk perspective, the inaccuracy is not particularly dangerous, meaning i
 I believe you could try the following:
 - On gain (`syncReward`) you'd add the extra rewards to `lpDepositAmount` this should ensure that the value is tracked more appropriately
 
-<a name="q-10" id="q-10"></a>
-# Q-10 Precision loss of y/X when y is very small could be used to break the invariant and reprice bonds
+<a name="q-11" id="q-11"></a>
+# Q-11 Precision loss of y/X when y is very small could be used to break the invariant and reprice bonds
 
 ## Impact
 
@@ -1193,8 +1308,8 @@ This may be weaponizeable to alter rates drastically when there's very little li
 
 Prevent y and X from ever reaching a value that would lose too much precision
 
-<a name="q-11" id="q-11"></a>
-# Q-11 UX Improvement - Make it easier to fetch deployment info
+<a name="q-12" id="q-12"></a>
+# Q-12 UX Improvement - Make it easier to fetch deployment info
 
 ## Impact
 
@@ -1204,8 +1319,8 @@ Prevent y and X from ever reaching a value that would lose too much precision
 
 Make `pools` public
 
-<a name="q-12" id="q-12"></a>
-# Q-12 `poolData.vault` is provided but never used
+<a name="q-13" id="q-13"></a>
+# Q-13 `poolData.vault` is provided but never used
 
 ## Impact
 
@@ -1219,8 +1334,8 @@ However, the value `vault` is `RestakingBondMM` is never used
 
 Delete the unused value
 
-<a name="q-13" id="q-13"></a>
-# Q-13 `RESTAKING_POOL_TYPE.NONE` is not supported
+<a name="q-14" id="q-14"></a>
+# Q-14 `RESTAKING_POOL_TYPE.NONE` is not supported
 
 ## Impact
 
@@ -1241,8 +1356,8 @@ But depositing in reverts every time
 
 Consider whether you should support a no-rehypothecation version or remove the option from the Enum
 
-<a name="q-14" id="q-14"></a>
-# Q-14 `lltv` is validated only when first adding a collateral
+<a name="q-15" id="q-15"></a>
+# Q-15 `lltv` is validated only when first adding a collateral
 
 ## Impact
 
@@ -1303,8 +1418,8 @@ It will only be performed the first time, possibly allowing the admin, by mistak
 
 Simplify the function to perform the checks at all time
 
-<a name="q-15" id="q-15"></a>
-# Q-15 TODO: AMM Fees should be rounded up as they are consistently undercharged
+<a name="q-16" id="q-16"></a>
+# Q-16 AMM Fees should be rounded up as they are consistently undercharged
 
 ## Impact
 
@@ -1357,8 +1472,8 @@ Logs:
   getFee 1
 ```
 
-<a name="q-16" id="q-16"></a>
-# Q-16 Euler deposits can be forced to revert to ensure that they do not earn yield
+<a name="q-17" id="q-17"></a>
+# Q-17 Euler deposits can be forced to revert to ensure that they do not earn yield
 
 ## Impact
 
@@ -1430,8 +1545,8 @@ This means that a deposit can take a flashloan, trigger the `nonReentrant` guard
 
 Consider whether you need the `try/catch` at all, as ultimately you may want to deprecate a market when the rehypothecation target is deprecated or paused
 
-<a name="q-17" id="q-17"></a>
-# Q-17 CEI Breaking Code
+<a name="q-18" id="q-18"></a>
+# Q-18 CEI Breaking Code
 
 ## Impact
 
@@ -1501,8 +1616,8 @@ https://github.com/spine-finance/resupplied-sm/blob/4fc85b1944f8c4f901bbbfe21883
 
 
 
-<a name="q-18" id="q-18"></a>
-# Q-18 Off by one error in `handlePaymentForSingleMaturity`
+<a name="q-19" id="q-19"></a>
+# Q-19 Off by one error in `handlePaymentForSingleMaturity`
 
 ## Impact
 
@@ -1596,8 +1711,8 @@ https://github.com/spine-finance/resupplied-sm/blob/4fc85b1944f8c4f901bbbfe21883
 
 ```
 
-<a name="q-19" id="q-19"></a>
-# Q-19 `LoanCalculator` should use feeds with 8 decimals
+<a name="q-20" id="q-20"></a>
+# Q-20 `LoanCalculator` should use feeds with 8 decimals
 
 ## Impact
 
@@ -1638,8 +1753,8 @@ Use feeds with 8 decimals, and fuzz test any integration with higher decimals as
 
 TODO: Consider refactoring to a simplified formula that eliminates a few decimals
 
-<a name="q-20" id="q-20"></a>
-# Q-20 Discrepancy between view functions and actual swap functions
+<a name="q-21" id="q-21"></a>
+# Q-21 Discrepancy between view functions and actual swap functions
 
 ## QA / MED - Asymmetric Fee math in `estimateBondAmountForExactQuoteToken` vs `swapBondForExactQuoteToken`
 
@@ -1682,13 +1797,13 @@ uint256 swapFee = (uint_delta_y * fee) / TEN_THOUSANDS;
 
 This function is no longer support: https://github.com/spine-finance/resupplied-sm/pull/5
 
-<a name="q-21" id="q-21"></a>
-# Q-21 `addMaturity` allows adding maturities in the past
+<a name="q-22" id="q-22"></a>
+# Q-22 `addMaturity` allows adding maturities in the past
 
 Fixed here: https://github.com/spine-finance/resupplied-sm/pull/7
 
-<a name="q-22" id="q-22"></a>
-# Q-22 Gotcha: Collateral Withdrawal can be Blocked by Cross-Collateral Solvency Check
+<a name="q-23" id="q-23"></a>
+# Q-23 Gotcha: Collateral Withdrawal can be Blocked by Cross-Collateral Solvency Check
 
 ## Impact
 The `CollateralLTVProtected` modifier in `withdrawCollateral` function at https://github.com/spine-finance/resupplied-sm/blob/4fc85b1944f8c4f901bbbfe218839b6a2a5f4e9e/contracts/RestakingRouter.sol#L327 prevents users from withdrawing unused collateral when they have debt backed by different collateral assets. This creates capital inefficiency where users cannot access their free collateral even when it's not securing any debt.
@@ -1712,8 +1827,8 @@ The modifier at https://github.com/spine-finance/resupplied-sm/blob/4fc85b1944f8
 Document this gotcha and possible use only one collateral at a time per deployment
 
 
-<a name="q-23" id="q-23"></a>
-# Q-23 Early return true on 0 borrows
+<a name="q-24" id="q-24"></a>
+# Q-24 Early return true on 0 borrows
 
 ## Impact
 
@@ -1747,13 +1862,13 @@ https://github.com/spine-finance/resupplied-sm/blob/ae4a9cdadc0cf96ae6267a2797af
 
 You can skip the logic if borrowed is zero, and return true
 
-<a name="q-24" id="q-24"></a>
-# Q-24 No Event on Liquidation
+<a name="q-25" id="q-25"></a>
+# Q-25 No Event on Liquidation
 
 The function `liquidate` performs a key operation but doesn't emit any event
 
-<a name="q-25" id="q-25"></a>
-# Q-25 Wrong event params on `LiquidityAdded`
+<a name="q-26" id="q-26"></a>
+# Q-26 Wrong event params on `LiquidityAdded`
 
 Shares minted are scaled by decimals
 
@@ -2050,7 +2165,70 @@ Use this tool to help you calculate the oracle drift:
 https://getrecon.xyz/tools/oracle-drift
 
 <a name="i-01" id="i-01"></a>
-# I-01 Invariant Testing
+# I-01 Additional Properties
+
+## X/Y only when X and Y are the same
+
+https://github.com/spine-finance/resupplied-sm/blob/ae4a9cdadc0cf96ae6267a2797afe717b52e60d7/contracts/RestakingBondMM.sol#L202-L206
+
+```solidity
+        } else if (_r0 > _r_star) {
+            X = (ud(_r0 - _r_star) / ud(_k0)).exp() * udCashIn; /// @audit Why?
+        } else {
+            X = udCashIn / ((ud(_r_star - _r0) / ud(_k0)).exp()); /// @audit Why?
+        }
+```
+
+These 2 conditions break the invariant due to truncation
+
+
+## Never 1
+
+https://github.com/spine-finance/resupplied-sm/blob/ae4a9cdadc0cf96ae6267a2797afe717b52e60d7/contracts/RestakingRouter.sol#L554-L555
+
+```solidity
+        (uint256 sign, ) = getRate(_poolAddress);
+        require(sign == 0, "Negative rate"); /// @audit Invariant Test
+```
+
+
+## Overflow Scenarios / Solvency Math
+
+https://github.com/spine-finance/resupplied-sm/blob/ae4a9cdadc0cf96ae6267a2797afe717b52e60d7/contracts/RestakingBondMM.sol#L298-L325
+
+```solidity
+ function redeem(
+        address _account,
+        uint256 _maturity
+    ) external onlyRouter returns (uint256 cashOut) {
+        require(block.timestamp > _maturity, "Can't redeem before maturity");
+        cashOut = bond.balanceOf(_account, _maturity);
+        uint256 _X = X.intoUint256();
+        X = ud((_X * (y - cashOut)) / y);
+        y -= cashOut;
+        if (loanData[_maturity].l > cashOut) { /// @audit Invariant Test
+            loanData[_maturity].l -= cashOut;
+        } else {
+            loanData[_maturity].l = 0;
+        }
+    }
+
+    function repay(uint256 _cashIn, uint256 _maturity) external onlyRouter {
+        require(block.timestamp > _maturity, "Can't repay before maturity");
+        uint256 _X = X.intoUint256();
+        X = ud((_X * (y + _cashIn)) / y);
+        y += _cashIn;
+        if (loanData[_maturity].b > _cashIn) { /// @audit Invariant Test
+            loanData[_maturity].b -= _cashIn;
+        } else {
+            loanData[_maturity].b = 0;
+        }
+    }
+
+```
+
+<a name="i-02" id="i-02"></a>
+# I-02 Invariant Testing
 
 ## Latest Run
 
