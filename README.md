@@ -15,6 +15,9 @@ The following blog posts share lessons learned from our engagements, work perfor
 
 | Date | Name | Link |
 |------|------|------|
+| Oct 2025 | Centrifuge V3 | Private |
+| Sept 2025 | Superform | Private | 
+| Aug - Sept 2025 | Li.Fi. | Private |
 | Jun 2025 | Cap | [link](https://github.com/Recon-Fuzz/cap-invariants) |
 | Mar - May 2025 | Centrifuge V3 | [link](https://github.com/centrifuge/protocol-v3/tree/feat/recon-invariants/test/integration/recon-end-to-end) | 
 | April 2025 | Beraborrow | Private |
@@ -34,6 +37,9 @@ The following contain audit reports for engagements performed by members of the 
 
 | Date | Name | Link |
 |------|------|------|
+| Oct 2025 | Centrifuge V3 | Private |
+| Sept 2025 | Superform | Private | 
+| Aug - Sept 2025 | Li.Fi. | Private |
 | July 2025 | Spine Finance | [link](https://github.com/Recon-Fuzz/audits/blob/main/Spine_Finance_Review.MD) |
 | April 2025 | Centrifuge V3 | [link](https://github.com/Recon-Fuzz/audits/blob/main/Centrifuge_Protocol_V3.MD) |
 | March 2025 | Orki | [link](https://github.com/Recon-Fuzz/audits/blob/main/Orki_audit.MD) |
