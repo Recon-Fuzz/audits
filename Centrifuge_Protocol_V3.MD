@@ -1,4 +1,4 @@
-![Centrifuge Security Review](https://alextheentreprenerd.publit.io/file/Audit-Review-20.png)
+![Centrifuge Security Review](https://alextheentreprenerd.publit.io/file/Audit-Review-redesign-3.png)
 
 # Recon Security Review
 
