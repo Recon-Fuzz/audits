@@ -37,7 +37,6 @@ The following contain audit reports for engagements performed by members of the 
 
 | Date | Name | Link |
 |------|------|------|
-| Oct 2025 | Centrifuge V3 | Private |
 | Sept 2025 | Superform | Private | 
 | Aug - Sept 2025 | Li.Fi. | Private |
 | July 2025 | Spine Finance | [link](https://github.com/Recon-Fuzz/audits/blob/main/Spine_Finance_Review.MD) |
