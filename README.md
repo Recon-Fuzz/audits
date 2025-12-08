@@ -15,8 +15,8 @@ The following blog posts share lessons learned from our engagements, work perfor
 
 | Date | Name | Link |
 |------|------|------|
-| Oct 2025 | Centrifuge V3 | Private |
-| Sept 2025 | Superform | Private | 
+| Oct 2025 | Centrifuge V3 | [link](https://github.com/centrifuge/protocol/tree/wf/feat/recon-invariants/test/integration/recon-end-to-end) |
+| Sept 2025 | Superform | [link](https://github.com/superform-xyz/v2-periphery/tree/dev/test/recon) | 
 | Aug - Sept 2025 | Li.Fi. | Private |
 | Jun 2025 | Cap | [link](https://github.com/Recon-Fuzz/cap-invariants) |
 | Mar - May 2025 | Centrifuge V3 | [link](https://github.com/centrifuge/protocol-v3/tree/feat/recon-invariants/test/integration/recon-end-to-end) | 
